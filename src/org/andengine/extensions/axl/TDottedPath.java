@@ -1,9 +1,11 @@
 package org.andengine.extensions.axl;
 
 import org.andengine.entity.sprite.batch.SpriteBatch;
+import org.andengine.extensions.utils.ExtUtils;
 import org.andengine.opengl.texture.ITexture;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
+import org.andengine.util.math.MathUtils;
 
 import android.graphics.Matrix;
 import android.graphics.Path;
@@ -36,8 +38,7 @@ public class TDottedPath extends SpriteBatch {
 	}
 	
 	public void insertInput(float pX,float pY){
-		Log.i("ActivePoints",":"+mIndexToDraw+",mpathsize:");
-		final float pDist = MyGameMath.distance(pX, pY, mLastX, mLastY);
+		final float pDist = MathUtils.distance(pX, pY, mLastX, mLastY);
 		if (pDist>=CFG_DISTANCE_BETWEEN){
 			mPath.lineTo(pX, pY);
 			//dodajemy punkty 
@@ -52,7 +53,6 @@ public class TDottedPath extends SpriteBatch {
 						mIndexToDraw++;
 						mActivePoints[mIndexToDraw].reset(v[2], v[5]);
 					}
-					
 				}
 			this.submit();
 			mLastX = pX;
@@ -78,7 +78,6 @@ public class TDottedPath extends SpriteBatch {
 	}
 	
 	public void endInput(final float pX,final float pY,boolean pClear){
-//		this.insertInput(pX, pY);
 		mLastX = 0;
 		mLastY = 0;
 		mPath.reset();
@@ -117,7 +116,6 @@ public class TDottedPath extends SpriteBatch {
 	}
 	
 	class TItem3d {
-		
 		float mX,mY;
 		float mRotation;
 		
