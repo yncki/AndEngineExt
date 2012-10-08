@@ -13,7 +13,7 @@ import android.graphics.Path;
 import android.graphics.PathMeasure;
 
 
-public class TDottedPath extends SpriteBatch {
+public class DottedPath extends SpriteBatch {
 
 	class TPoint {
 		float mX, mY;
@@ -47,7 +47,7 @@ public class TDottedPath extends SpriteBatch {
 
 	
 	//TODO , change pConfigTouchEventDelay to ratio per second 
-	public TDottedPath(float pX, float pY, ITexture pTexture,
+	public DottedPath(float pX, float pY, ITexture pTexture,
 			ITextureRegion pTextureRegion, int pCapacity,
 			VertexBufferObjectManager pVertexBufferObjectManager,
 			final int pConfigStepBy,final float pConfigTouchEventDelay) {
