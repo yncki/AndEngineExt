@@ -1,7 +1,6 @@
 package org.andengine.extensions.axl;
 
 import org.andengine.entity.sprite.batch.SpriteBatch;
-import org.andengine.extensions.utils.ExtUtils;
 import org.andengine.opengl.texture.ITexture;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
@@ -10,13 +9,12 @@ import org.andengine.util.math.MathUtils;
 import android.graphics.Matrix;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
-import android.util.Log;
 
 public class TDottedPath extends SpriteBatch {
 
 	public final static int CFG_DISTANCE_BETWEEN 		= 18;
 	
-	private 			TItem3d[] 	mActivePoints		= new TItem3d[300];;
+	private 			TItem3d[] 	mActivePoints		= new TItem3d[300];
 	private 			int 	  	mIndexToDraw 		= 0;
 	private				PathMeasure mPathMeasure 					= new PathMeasure();
 	private				Path 		mPath 				= new Path();
