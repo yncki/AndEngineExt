@@ -6,15 +6,12 @@ import org.andengine.util.math.MathUtils;
 
 public class ExtUtils {
 	
-    
 	public static float[] position_on_circle(final float centerX,final float centerY,float pDegree,float pRadius){
 		double radian = (pDegree / 180) * Math.PI;
 		float x = ((float) (centerX + Math.cos(radian) * pRadius));//-this.getWidth()/2;
 		float y = ((float) (centerY - Math.sin(radian) * pRadius));//-this.getHeight()/2; 
 		return new float[]{x,y};
 	}
-    
-
     
     public static ArrayList<float[]> GetBezierCurve(final float pX1,final float pY1,final float pX2,final float pY2,final float pX3,final float pY3,final float pX4,final float pY4,final float pSkip) {
     	ArrayList<float[]> pOutPut = new ArrayList<float[]>();
