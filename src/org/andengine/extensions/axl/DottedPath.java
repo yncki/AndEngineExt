@@ -29,7 +29,7 @@ public class DottedPath extends SpriteBatch {
 	}
 	
 	private TPoint[] mOutputPoints;
-	private int mIndexToDraw = 0;
+	private int mLimitIndexToDraw = 0;
 	private PathMeasure mPathMeasure = new PathMeasure();
 	private Path mPath = new Path();
 	private Matrix mMatrix = new Matrix();
@@ -45,15 +45,19 @@ public class DottedPath extends SpriteBatch {
 	
 	private float mSecondsElapsed,mLastSecondsElapsed = 0f;
 
+	protected final float mDotWidth;
+	protected final float mDotHeight;
 	
 	//TODO , change pConfigTouchEventDelay to ratio per second 
 	public DottedPath(float pX, float pY, ITexture pTexture,
 			ITextureRegion pTextureRegion, int pCapacity,
 			VertexBufferObjectManager pVertexBufferObjectManager,
-			final int pConfigStepBy,final float pConfigTouchEventDelay) {
+			final int pConfigStepBy,final float pConfigTouchEventDelay,float pDotWidth,float pDotHeight) {
 		super(pX, pY, pTexture, pCapacity, pVertexBufferObjectManager);
 		mConfigStepBy = pConfigStepBy;
 		mConfigTouchEventDelay = pConfigTouchEventDelay;
+		mDotWidth = pDotWidth;
+		mDotHeight = pDotHeight;
 		mTextureRegion = pTextureRegion;
 		mOutputPoints = new TPoint[pCapacity];
 		for (int i = 0; i < pCapacity; i++) {
@@ -69,16 +73,14 @@ public class DottedPath extends SpriteBatch {
 		return 1f;
 	}
 
-	public float getDotHeight(int pIndex) {
-		if (pIndex % 3 == 0)
-			return 16;
-		return 8;
+	protected float getDotHeight(int pIndex) {
+		return mDotHeight;
 	}
 
 	public float getDotWidth(int pIndex) {
-		if (pIndex % 3 == 0)
-			return 16;
-		return 8;
+//		if (pIndex % 3 == 0)
+//			return 16;
+		return mDotWidth;
 	}
 
 	public float getDotRotation(final int pIndex) {
@@ -102,14 +104,14 @@ public class DottedPath extends SpriteBatch {
 			mPathMeasure.setPath(mPath, false);
 			final float LENGTH = mPathMeasure.getLength();
 			float[] v = new float[9];
-			mIndexToDraw = 0;
+			mLimitIndexToDraw = 0;
 			for (int t = 0; t < LENGTH; t += mConfigStepBy) { //distance between each point
-				if (mIndexToDraw < getCapacity() - 1) {
+				if (mLimitIndexToDraw < getCapacity() - 1) {
 					mPathMeasure.getMatrix(t, mMatrix, 0x01 | 0x02);
 					mMatrix.getValues(v);
-					mIndexToDraw++;
-					mOutputPoints[mIndexToDraw].reset(v[2], v[5]);
-					this.onPushOutputPoint(mOutputPoints[mIndexToDraw],mOutputPoints[mIndexToDraw-1]);
+					mOutputPoints[mLimitIndexToDraw].reset(v[2], v[5]);
+					mLimitIndexToDraw++;
+					this.onPushOutputPoint(mOutputPoints[mLimitIndexToDraw],mOutputPoints[mLimitIndexToDraw-1]);
 				}
 			}
 			this.submit();
@@ -118,7 +120,6 @@ public class DottedPath extends SpriteBatch {
 		}
 	}
 
-	
 	protected void onPushOutputPoint(TPoint pNewPoint,TPoint pLastPoint) {
 		
 	}
@@ -131,7 +132,9 @@ public class DottedPath extends SpriteBatch {
 		this.endInput(pSceneTouchEvent.getX(),pSceneTouchEvent.getY(), pClear);
 	}
 	
+	
 	public void startInput(final float pX, final float pY) {
+		mLimitIndexToDraw = 0;
 		mLastX = 0;
 		mLastY = 0;
 		mPath.reset();
@@ -140,24 +143,31 @@ public class DottedPath extends SpriteBatch {
 		this.mLastSecondsElapsed = 0f;
 		this.submit();
 	}
-
+	public void endInput(boolean pClear) {
+		mLastX = 0;
+		mLastY = 0;
+		mPath.reset();
+		if (pClear) {
+			super.submit();
+			mLimitIndexToDraw = 0;
+		}
+	}
 	public void endInput(final float pX, final float pY, boolean pClear) {
 		if (!pClear) this.insertInput(pX, pY);
 		mLastX = 0;
 		mLastY = 0;
 		mPath.reset();
 		if (pClear) {
-			mIndexToDraw = 0;
 			super.submit();
+			mLimitIndexToDraw = 0;
 		}
 	}
 	
 	@Override
 	public void submit() {
-		int pSize = mIndexToDraw;
+		int pSize = mLimitIndexToDraw;
 		int pDrawn = 0;
-		if (mIndexToDraw > this.getCapacity())
-			pSize = this.getCapacity();
+		if (mLimitIndexToDraw > this.getCapacity())	pSize = this.getCapacity();
 		for (int i = 0; i < pSize; i++) {
 			final TPoint P = mOutputPoints[i];
 			pDrawn++;
